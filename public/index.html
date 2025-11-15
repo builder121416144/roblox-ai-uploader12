@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox AI Uploader</title>
+</head>
+<body>
+  <h1>Roblox AI Uploader</h1>
+  <textarea id="prompt" placeholder="Scrivi il tuo prompt..."></textarea><br>
+  <input type="text" id="name" placeholder="Nome modello"><br>
+  <input type="text" id="description" placeholder="Descrizione modello"><br>
+  <button id="generateBtn">Genera e carica</button>
+  <p id="status"></p>
+
+  <script>
+    const btn = document.getElementById("generateBtn");
+    const status = document.getElementById("status");
+
+    btn.addEventListener("click", async () => {
+      const prompt = document.getElementById("prompt").value;
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+
+      if (!prompt || !name || !description) {
+        status.textContent = "Compila tutti i campi!";
+        return;
+      }
+
+      try {
+        status.textContent = "Generazione modello...";
+        // Step 1: Meshy
+        const meshRes = await fetch("/api/meshy/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+        const meshData = await meshRes.json();
+        if (!meshRes.ok) throw new Error(meshData.error);
+
+        status.textContent = "Conversione e upload su Roblox...";
+        // Step 2: Convert & upload
+        const uploadRes = await fetch("/api/roblox/convert_and_upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            glbUrl: meshData.glbUrl,
+            name,
+            description
+          })
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error);
+
+        status.textContent = `Upload completato! Asset ID: ${uploadData.assetId}`;
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Errore: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
