@@ -18,15 +18,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing Open Cloud API key" });
   }
 
-  // Costruisci form data
   const form = new FormData();
   const metadata = {
     assetType: "Model",
-    creationContext: {
-      creator: {
-        userId: parseInt(process.env.ROBLOX_USER_ID, 10),
-      }
-    },
     displayName: name,
     description: description
   };
@@ -52,10 +46,9 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    // La risposta è un’operazione (long running)
     const operationPath = data.path;
 
-    // Polling per vedere quando l’upload è completato
+    // Polling per completamento
     let statusRes;
     let attempts = 0;
     do {
