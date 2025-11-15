@@ -1,13 +1,22 @@
 {
   "name": "roblox-ai-uploader12",
   "version": "1.0.0",
-  "type": "module",
-  "private": true,
+  "description": "App per generare modelli 3D con Meshy e caricarli su Roblox",
+  "main": "index.js",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
+  "keywords": ["roblox", "meshy", "3d", "node", "nextjs", "api"],
+  "author": "Anya",
+  "license": "MIT",
   "dependencies": {
-    "node-fetch": "3.3.2"
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "node-fetch": "^3.3.2",
+    "form-data": "^4.0.0",
+    "aspose3dcloud": "^23.10.0"
   }
 }
