@@ -1,4 +1,4 @@
-// /api/meshy/generate.js
+// api/meshy/generate.js
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
@@ -7,10 +7,7 @@ export default async function handler(req, res) {
   }
 
   const { prompt } = req.body;
-
-  if (!prompt) {
-    return res.status(400).json({ error: "Prompt is required" });
-  }
+  if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
   try {
     const response = await fetch("https://api.meshy.ai/v1/generate", {
@@ -21,8 +18,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         prompt,
-        quality: "preview", // puoi usare "high" se vuoi più dettagli
-        format: "glb"       // formato 3D standard compatibile con Roblox
+        quality: "preview",
+        format: "glb"
       })
     });
 
@@ -32,9 +29,7 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-
-    // data conterrà l'URL del modello GLB generato da Meshy
-    res.status(200).json({ modelUrl: data.url });
+    res.status(200).json({ glbUrl: data.url }); // restituiamo l'URL del modello
   } catch (error) {
     console.error("Meshy API error:", error);
     res.status(500).json({ error: "Failed to generate 3D model" });
